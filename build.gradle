@@ -12,17 +12,30 @@ apply plugin: 'java'
 apply plugin: 'jacoco'
 apply plugin: 'signing'
 apply plugin: 'maven'
+apply plugin: 'maven-publish'
 
-group = 'com.github.tveimo'
+group = 'ua.kasta'
 description = 'SASS compiler using libsass.'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from(components.java)
+        }
+    }
+}
+
 jar {
     manifest {
         attributes 'Implementation-Title': 'jsass',
                 'Implementation-Version': version
+    }
+    into("META-INF/maven/${project.group}/${project.name}") {
+        from generatePomFileForMavenPublication
+        rename { it.replace('pom-default.xml', 'pom.xml') }
     }
 }
 
